@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<!--
+  MOBILE BAKERY COMP SHOP v3 — External vendor-ready
+  Works on ANY device, ANY network (no VPN needed)
+  Self-contained: zero dependencies, zero server calls
+  Companion to Seasonal_Comp_Dashboard.html (desktop)
+  clay.massa@walmart.com
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🛒 Bakery Comp Shop</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+body{background:#f0f4ff;color:#1e293b;font-size:16px;line-height:1.5;overflow-x:hidden;min-height:100dvh}
+:root{
+  --blue:#0053e2;--blue-dk:#003fa8;--spark:#ffc220;
+  --bg:#f0f4ff;--card:#fff;--bdr:#cbd5e1;
+  --text:#1e293b;--muted:#64748b;--red:#dc2626;--green:#15803d;--warn:#d97706;
+  --r:12px;--sab:env(safe-area-inset-bottom,0px);
+}
+input,select,textarea,button{font:inherit;color:inherit}
+.screen{display:none;flex-direction:column;min-height:100dvh}
+.screen.active{display:flex}
+.topbar{background:var(--blue);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.topbar h1{font-size:16px;font-weight:700;flex:1}
+.topbar-pill{background:var(--spark);color:#1a1a1a;font-size:11px;font-weight:800;padding:4px 12px;border-radius:20px}
+.scroll-area{flex:1;padding:16px;padding-bottom:calc(16px + var(--sab));overflow-y:auto;-webkit-overflow-scrolling:touch}
+.card{background:var(--card);border-radius:var(--r);box-shadow:0 1px 6px rgba(0,0,0,.07);margin-bottom:14px;overflow:hidden}
+.card-hdr{padding:12px 16px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--bdr)}
+.card-body{padding:14px 16px}
+.f{margin-bottom:12px}
+.f label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.f .req{color:var(--red)}
+.f input,.f select,.f textarea{width:100%;height:50px;padding:0 14px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:16px;background:var(--card);-webkit-appearance:none;appearance:none}
+.f select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' fill='none' stroke-width='2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.f textarea{height:70px;padding:12px 14px;resize:none}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,83,226,.12)}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.f-hint{font-size:11px;color:var(--muted);margin-top:3px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:52px;padding:0 24px;border-radius:var(--r);font-size:16px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .1s}
+.btn:active{transform:scale(.97)}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-green{background:var(--green);color:#fff}
+.btn-red{background:var(--red);color:#fff}
+.btn-ghost{background:transparent;color:var(--blue);border:1.5px solid var(--bdr)}
+.btn-full{width:100%}
+.sticky-foot{position:sticky;bottom:0;padding:12px 16px calc(12px + var(--sab));background:var(--card);border-top:1px solid var(--bdr);box-shadow:0 -2px 10px rgba(0,0,0,.06);z-index:50}
+.photo-well{background:#e2e8f0;border-radius:var(--r);min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;position:relative;overflow:hidden;border:2px dashed var(--bdr);margin-bottom:14px}
+.photo-well.has-img{border-style:solid;border-color:var(--blue);min-height:0}
+.photo-well img{width:100%;display:block;border-radius:calc(var(--r) - 2px)}
+.photo-well .del-photo{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;border:none;font-size:18px;display:flex;align-items:center;justify-content:center}
+.store-bar{background:#eef2ff;padding:10px 16px;border-bottom:1px solid var(--bdr);font-size:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.store-bar b{color:var(--text)}
+.store-bar .link{margin-left:auto;color:var(--blue);font-weight:700;text-decoration:underline;cursor:pointer}
+.rv{display:flex;gap:10px;padding:12px 14px;border-bottom:1px solid var(--bdr);align-items:center}
+.rv:last-child{border-bottom:none}
+.rv-thumb{width:64px;height:52px;border-radius:8px;object-fit:cover;background:#e2e8f0;flex-shrink:0}
+.rv-info{flex:1;min-width:0}
+.rv-info .rv-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rv-info .rv-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.rv-info .rv-price{font-size:15px;font-weight:800;color:var(--blue);margin-top:2px}
+.rv-btns{display:flex;flex-direction:column;gap:5px}
+.rv-btns button{width:36px;height:36px;border-radius:8px;border:none;font-size:14px;background:#f1f5f9;cursor:pointer}
+.toast-box{position:fixed;top:14px;left:14px;right:14px;z-index:9999;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.toast{background:#1e293b;color:#fff;padding:12px 16px;border-radius:var(--r);font-size:14px;font-weight:600;animation:tIn .3s;pointer-events:auto}
+.toast.ok{background:var(--green)}.toast.err{background:var(--red)}.toast.wrn{background:var(--warn)}
+@keyframes tIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:flex-end}
+.sheet-bg.hide{display:none}
+.sheet{background:var(--card);border-radius:20px 20px 0 0;width:100%;max-height:90dvh;overflow-y:auto;padding:20px 16px calc(20px + var(--sab));animation:shUp .25s ease-out}
+@keyframes shUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sheet-bar{width:36px;height:4px;background:#cbd5e1;border-radius:2px;margin:0 auto 16px}
+.done-wrap{text-align:center;padding:36px 20px}
+.done-wrap .big{font-size:56px;margin-bottom:12px}
+.done-wrap h2{font-size:20px;font-weight:800;margin-bottom:6px}
+.done-wrap p{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6}
+/* Help banner */
+.help-banner{background:#fffbeb;border:1.5px solid #fcd34d;border-radius:var(--r);padding:14px 16px;margin-bottom:14px;position:relative}
+.help-banner h3{font-size:14px;font-weight:800;margin-bottom:6px;color:#92400e}
+.help-banner p,.help-banner li{font-size:13px;color:#78350f;line-height:1.5}
+.help-banner ol{padding-left:20px;margin:6px 0}
+.help-banner .dismiss{position:absolute;top:8px;right:10px;background:none;border:none;font-size:18px;color:#92400e;cursor:pointer;padding:4px}
+/* Fixture grid */
+.fix-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.fix-card{position:relative;border-radius:var(--r);overflow:hidden;background:#e2e8f0;aspect-ratio:4/3}
+.fix-card img{width:100%;height:100%;object-fit:cover}
+.fix-card .fix-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.6);color:#fff;font-size:11px;padding:4px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fix-card .fix-del{position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.5);color:#fff;border:none;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.fix-add{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:2px dashed var(--bdr);border-radius:var(--r);aspect-ratio:4/3;cursor:pointer;color:var(--muted);font-size:12px;font-weight:700}
+.fix-add span:first-child{font-size:28px}
+</style>
+</head>
+<body>
+
+<!-- ===== NOSCRIPT: Shows in email clients that disable JS ===== -->
+<noscript>
+<div style="max-width:500px;margin:20px auto;padding:24px;background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.1);font-family:system-ui,sans-serif;text-align:center">
+  <div style="font-size:48px;margin-bottom:12px">🛒📱</div>
+  <h2 style="font-size:20px;color:#1e293b;margin-bottom:8px">Bakery Comp Shop Tool</h2>
+  <p style="font-size:14px;color:#64748b;margin-bottom:16px">This is an interactive app — save it and open in your browser!</p>
+  <div style="text-align:left;background:#f0f4ff;border-radius:12px;padding:16px;margin-bottom:12px">
+    <p style="font-size:14px;font-weight:700;color:#0053e2;margin-bottom:8px">📱 iPhone / iPad:</p>
+    <ol style="font-size:13px;color:#334155;padding-left:20px;line-height:1.8">
+      <li>Tap &amp; hold the file attachment in your email</li>
+      <li>Tap <strong>"Save to Files"</strong> → choose iCloud or On My iPhone</li>
+      <li>Open the <strong>Files</strong> app on your home screen</li>
+      <li>Find and tap the file → it opens in Safari automatically!</li>
+    </ol>
+  </div>
+  <div style="text-align:left;background:#f0fdf4;border-radius:12px;padding:16px;margin-bottom:12px">
+    <p style="font-size:14px;font-weight:700;color:#15803d;margin-bottom:8px">🤖 Android:</p>
+    <ol style="font-size:13px;color:#334155;padding-left:20px;line-height:1.8">
+      <li>Tap the attachment to download it</li>
+      <li>Tap the <strong>"Download complete"</strong> notification</li>
+      <li>Choose <strong>Chrome</strong> (or your browser) to open it</li>
+    </ol>
+  </div>
+  <div style="text-align:left;background:#fefce8;border-radius:12px;padding:16px">
+    <p style="font-size:14px;font-weight:700;color:#92400e;margin-bottom:8px">💻 Laptop / Desktop:</p>
+    <ol style="font-size:13px;color:#334155;padding-left:20px;line-height:1.8">
+      <li>Download the file attachment</li>
+      <li>Double-click to open — it opens in your browser</li>
+    </ol>
+  </div>
+  <p style="font-size:12px;color:#94a3b8;margin-top:14px">No internet required after opening • No app install needed • Works offline</p>
+</div>
+</noscript>
+
+<!-- ===== SCREEN 1 — SETUP ===== -->
+<div id="scr-setup" class="screen active">
+  <div class="topbar">
+    <h1>🛒 Bakery Comp Shop</h1>
+  </div>
+  <div class="scroll-area">
+
+    <!-- Help banner (dismissable) -->
+    <div class="help-banner" id="help-banner">
+      <button class="dismiss" onclick="dismissHelp()" aria-label="Close">✕</button>
+      <h3>👋 Welcome! Quick Start:</h3>
+      <ol>
+        <li>Fill in your info &amp; select a season below</li>
+        <li>Tap <strong>Start Shopping</strong> → snap photos &amp; enter item details</li>
+        <li>When done, capture <strong>fixture/mod photos</strong> of the full set</li>
+        <li>Review everything → <strong>Send to Clay</strong> via email</li>
+      </ol>
+      <p style="margin-top:6px">💡 Your info is saved for next time. Works offline!</p>
+    </div>
+
+    <div class="card">
+      <div class="card-hdr">👤 Your Info</div>
+      <div class="card-body">
+        <div class="f"><label>Name <span class="req">★</span></label>
+          <input type="text" id="s-name" placeholder="Jane Smith" autocomplete="name"></div>
+        <div class="f"><label>Company <span class="req">★</span></label>
+          <input type="text" id="s-company" placeholder="Your company" autocomplete="organization"></div>
+        <div class="f"><label>Email <span class="req">★</span></label>
+          <input type="email" id="s-email" placeholder="you@company.com" autocomplete="email"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hdr">📅 Season</div>
+      <div class="card-body">
+        <div class="f"><label>Season <span class="req">★</span></label>
+          <select id="s-season"><option value="">-- Select Season --</option></select>
+          <div class="f-hint">Which seasonal period are you shopping?</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hdr">🏬 Store You're Shopping</div>
+      <div class="card-body">
+        <div class="f"><label>Retailer <span class="req">★</span></label>
+          <select id="s-retailer"><option value="">-- Select Retailer --</option></select></div>
+        <div class="f-row">
+          <div class="f"><label>State <span class="req">★</span></label>
+            <select id="s-state"><option value="">-- State --</option></select></div>
+          <div class="f"><label>City</label>
+            <input type="text" id="s-city" placeholder="e.g. Phoenix"></div>
+        </div>
+        <div class="f-row">
+          <div class="f"><label>Date</label>
+            <input type="date" id="s-date"></div>
+          <div class="f"><label>Channel</label>
+            <select id="s-channel">
+              <option value="In-Store">In-Store</option>
+              <option value="Online">Online</option>
+            </select></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sticky-foot">
+    <button class="btn btn-blue btn-full" onclick="startShopping()">📸 Start Shopping</button>
+  </div>
+</div>
+
+<!-- ===== SCREEN 2 — CAPTURE ===== -->
+<div id="scr-capture" class="screen">
+  <div class="topbar">
+    <h1>📸 Capture</h1>
+    <span class="topbar-pill" id="cap-pill">0 items</span>
+  </div>
+  <div class="store-bar" id="store-bar">
+    🏬 <b id="bar-retailer">--</b> &middot; <span id="bar-loc">--</span>
+    <span class="link" onclick="goBack()">Change</span>
+  </div>
+  <div class="scroll-area" id="cap-scroll">
+    <div class="photo-well" id="photo-well" onclick="snapPhoto()">
+      <span style="font-size:40px">📷</span>
+      <span class="ph-txt">Tap to take photo</span>
+      <span class="ph-txt" style="font-size:11px">Shelf tag + item visible</span>
+    </div>
+    <input type="file" id="cam" accept="image/*" capture="environment" style="display:none">
+
+    <div class="card">
+      <div class="card-hdr">📋 Item Details</div>
+      <div class="card-body">
+        <div class="f-row">
+          <div class="f"><label>Type <span class="req">★</span></label>
+            <select id="c-type" onchange="typeChanged()"><option value="">-- Type --</option></select></div>
+          <div class="f" id="subtype-wrap"><label>Subtype <span class="req">★</span></label>
+            <select id="c-sub"><option value="">-- Subtype --</option></select>
+            <input type="text" id="c-sub-txt" placeholder="Describe…" style="display:none"></div>
+        </div>
+        <div class="f"><label>Item Name <span class="req">★</span></label>
+          <input type="text" id="c-name" placeholder="Frosted Holiday Cookie 24ct 13.5oz"></div>
+        <div class="f"><label>Brand</label>
+          <input type="text" id="c-brand" placeholder="Good & Gather, Marketside…"></div>
+        <div class="f-row">
+          <div class="f"><label>Retail $ <span class="req">★</span></label>
+            <input type="number" id="c-price" placeholder="4.99" step=".01" inputmode="decimal"></div>
+          <div class="f"><label>Oz <span class="req">★</span></label>
+            <input type="number" id="c-oz" placeholder="13.5" step=".1" inputmode="decimal"></div>
+        </div>
+        <div class="f-row">
+          <div class="f"><label>Pack / Count</label>
+            <input type="number" id="c-ct" placeholder="24" step="1" inputmode="numeric"></div>
+          <div class="f"><label>Size / Format</label>
+            <input type="text" id="c-size" placeholder="2 cell, 12ct…"></div>
+        </div>
+        <div class="f-row">
+          <div class="f"><label>Promo $</label>
+            <input type="number" id="c-promo" placeholder="Sale price" step=".01" inputmode="decimal"></div>
+          <div class="f"><label>Promo Type</label>
+            <select id="c-promotype"><option value="">-- None --</option></select></div>
+        </div>
+        <div class="f"><label>Notes</label>
+          <textarea id="c-notes" placeholder="Display, stock level, anything useful…"></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sticky-foot" style="display:flex;flex-direction:column;gap:8px">
+    <button class="btn btn-green btn-full" onclick="saveItem()">✅ Save &amp; Capture Next</button>
+    <button class="btn btn-ghost btn-full" onclick="openFixtures()" id="review-btn" disabled>
+      📋 Finish &amp; Review (<span id="rv-ct">0</span>)
+    </button>
+  </div>
+</div>
+
+<!-- ===== SCREEN 3 — FIXTURE / MOD PHOTOS ===== -->
+<div id="scr-fixtures" class="screen">
+  <div class="topbar">
+    <h1>🏪 Fixture Photos</h1>
+    <span class="topbar-pill" id="fix-pill">0 photos</span>
+  </div>
+  <div class="scroll-area">
+    <div class="card">
+      <div class="card-hdr">📸 Full Category / Mod Set Photos</div>
+      <div class="card-body">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:10px">
+          Capture the <strong>full fixture / mod / endcap / display</strong> — show how the seasonal set is merchandised together.
+          These help see the whole picture, not just individual items.
+        </p>
+        <div class="fix-grid" id="fix-grid">
+          <div class="fix-add" onclick="addFixture()">
+            <span>📷</span><span>Add Photo</span>
+          </div>
+        </div>
+        <input type="file" id="fix-cam" accept="image/*" capture="environment" style="display:none">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hdr">💬 Fixture Notes (optional)</div>
+      <div class="card-body">
+        <div class="f" style="margin-bottom:0">
+          <textarea id="fix-notes" placeholder="Overall impressions: fixture size, placement quality, seasonal signage, stock depth…" style="height:90px"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sticky-foot" style="display:flex;flex-direction:column;gap:8px">
+    <button class="btn btn-blue btn-full" onclick="openReview()">📋 Review &amp; Send</button>
+    <button class="btn btn-ghost btn-full" onclick="nav('capture')">← Back to Items</button>
+  </div>
+</div>
+
+<!-- ===== SCREEN 4 — REVIEW + SEND ===== -->
+<div id="scr-review" class="screen">
+  <div class="topbar">
+    <h1>📋 Review &amp; Send</h1>
+    <span class="topbar-pill" id="rv-pill">0</span>
+  </div>
+  <div class="scroll-area">
+    <div style="text-align:center;padding:8px 0 12px">
+      <strong id="rv-total">0</strong> items &middot;
+      <strong id="rv-fix-ct">0</strong> fixture photos &middot;
+      <span id="rv-store">--</span>
+    </div>
+    <div class="card" style="padding:0" id="rv-list"></div>
+    <div class="card" id="rv-fix-card" style="display:none">
+      <div class="card-hdr">🏪 Fixture Photos</div>
+      <div class="card-body">
+        <div class="fix-grid" id="rv-fix-grid"></div>
+      </div>
+    </div>
+  </div>
+  <div class="sticky-foot" style="display:flex;flex-direction:column;gap:8px">
+    <button class="btn btn-blue btn-full" onclick="sendToClayV3()">📧 Send to Clay</button>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-ghost btn-full" onclick="nav('fixtures')">🏪 Fixtures</button>
+      <button class="btn btn-ghost btn-full" onclick="nav('capture')">+ Add Items</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 5 — DONE ===== -->
+<div id="scr-done" class="screen">
+  <div class="topbar"><h1>✅ Done!</h1></div>
+  <div class="scroll-area">
+    <div class="done-wrap">
+      <div class="big">🎉</div>
+      <h2>Submission Sent!</h2>
+      <p id="done-msg">Check your email app to finish sending.</p>
+      <button class="btn btn-blue btn-full" onclick="nav('capture')" style="margin-bottom:10px">📸 Keep Shopping</button>
+      <button class="btn btn-ghost btn-full" onclick="freshSession()">🔄 New Session</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT SHEET -->
+<div id="edit-bg" class="sheet-bg hide">
+  <div class="sheet">
+    <div class="sheet-bar"></div>
+    <h3 style="font-size:16px;font-weight:800;margin-bottom:14px">✏️ Edit Item</h3>
+    <div id="edit-body"></div>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button class="btn btn-blue btn-full" onclick="commitEdit()">Save</button>
+      <button class="btn btn-ghost" onclick="hideEdit()" style="flex-shrink:0">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- FIXTURE LABEL SHEET -->
+<div id="fixlbl-bg" class="sheet-bg hide">
+  <div class="sheet">
+    <div class="sheet-bar"></div>
+    <h3 style="font-size:16px;font-weight:800;margin-bottom:14px">🏷️ Label This Photo</h3>
+    <div class="f"><label>Description</label>
+      <input type="text" id="fix-label-input" placeholder="e.g. Easter endcap, Main cookie aisle inline…">
+    </div>
+    <div style="display:flex;gap:10px;margin-top:10px">
+      <button class="btn btn-blue btn-full" onclick="commitFixLabel()">Save</button>
+      <button class="btn btn-ghost" onclick="hideFixLabel()" style="flex-shrink:0">Skip</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-box" id="toasts"></div>
+
+<script>
+/* ================================================================
+   CONFIG
+================================================================ */
+const BUYER_EMAIL = 'clay.massa@walmart.com';
+
+const SEASONS = [
+  {name:"Valentine's Day",year:2026,emoji:'💝',peak:'1/26–2/14'},
+  {name:'Mardi Gras',year:2026,emoji:'🎭',peak:'2/1–2/17',note:'Gulf Coast'},
+  {name:'Easter',year:2026,emoji:'🐣',peak:'3/16–4/5'},
+  {name:'Cinco de Mayo',year:2026,emoji:'🇲🇽',peak:'4/20–5/5',note:'Southwest'},
+  {name:'Graduation',year:2026,emoji:'🎓',peak:'5/1–6/15'},
+  {name:'Summer / Patriotic',year:2026,emoji:'🇺🇸',peak:'5/18–7/6'},
+  {name:'Back to School',year:2026,emoji:'📚',peak:'7/20–9/5'},
+  {name:'Halloween',year:2026,emoji:'🎃',peak:'9/15–10/31'},
+  {name:'Thanksgiving',year:2026,emoji:'🦃',peak:'11/16–11/26'},
+  {name:'Holiday / Christmas',year:2026,emoji:'🎄',peak:'12/1–12/25'},
+];
+
+const SEASON_DATES = {
+  "Valentine's Day 2026":   {s:'2026-01-26',e:'2026-02-14'},
+  'Mardi Gras 2026':        {s:'2026-02-01',e:'2026-02-17'},
+  'Easter 2026':            {s:'2026-03-16',e:'2026-04-05'},
+  'Cinco de Mayo 2026':     {s:'2026-04-20',e:'2026-05-05'},
+  'Graduation 2026':        {s:'2026-05-01',e:'2026-06-15'},
+  'Summer / Patriotic 2026':{s:'2026-05-18',e:'2026-07-06'},
+  'Back to School 2026':    {s:'2026-07-20',e:'2026-09-05'},
+  'Halloween 2026':         {s:'2026-09-15',e:'2026-10-31'},
+  'Thanksgiving 2026':      {s:'2026-11-16',e:'2026-11-26'},
+  'Holiday / Christmas 2026':{s:'2026-12-01',e:'2026-12-25'},
+};
+
+const TYPES = {
+  'COOKIES':  ['FROSTED','SHAPED/SUGAR','CORE','KIT','THUMB/SANDWICH/CAKE'],
+  'SWEETS':   ['CAKE ROLL','BROWNIE','CONFECTION','CRISPY','CAKE BITE','FRUIT CAKE','BAR','PANETTONE','BUNDT','KING CAKE','BAKLAVA','FUDGE','PIE'],
+  'CUPCAKES': ['FULL SZ','MINI'],
+  'SNACK MIX':['MIX','PRETZEL','POPCORN'],
+  'BREAKFAST':['DONUT','MUFFINS','LOAF CAKES','DANISH'],
+  'BREADS':   ['SEASONAL BREADS'],
+  'OTHER':    [],
+};
+
+const RETAILERS = [
+  'Target','Kroger','Albertsons/Safeway','Publix','HEB','Costco',"Sam's Club",
+  'Aldi',"Trader Joe's",'Whole Foods','Wegmans','Food Lion',
+  'Giant Eagle','Meijer','Hy-Vee','WinCo','Sprouts','Dollar General',
+  'Dollar Tree','Five Below','CVS','Walgreens','Amazon Fresh','Other',
+];
+
+const STATES = [
+  'AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA',
+  'KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ',
+  'NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT',
+  'VA','WA','WV','WI','WY','DC','Online',
+];
+
+const REGION_MAP = {
+  AL:'Southeast',AK:'West',AZ:'Southwest',AR:'South Central',
+  CA:'Pacific Coast',CO:'Mountain West',CT:'Northeast',DE:'Mid-Atlantic',
+  FL:'Southeast',GA:'Southeast',HI:'West',ID:'Mountain West',
+  IL:'Midwest',IN:'Midwest',IA:'Midwest',KS:'Midwest',
+  KY:'South Central',LA:'South Central',ME:'Northeast',MD:'Mid-Atlantic',
+  MA:'Northeast',MI:'Midwest',MN:'Midwest',MS:'South Central',
+  MO:'Midwest',MT:'Mountain West',NE:'Midwest',NV:'Mountain West',
+  NH:'Northeast',NJ:'Northeast',NM:'Southwest',NY:'Northeast',
+  NC:'Southeast',ND:'Midwest',OH:'Midwest',OK:'South Central',
+  OR:'Pacific Coast',PA:'Northeast',RI:'Northeast',SC:'Southeast',
+  SD:'Midwest',TN:'South Central',TX:'South Central',UT:'Mountain West',
+  VT:'Northeast',VA:'Southeast',WA:'Pacific Coast',WV:'Southeast',
+  WI:'Midwest',WY:'Mountain West',DC:'Mid-Atlantic',Online:'National',
+};
+
+const PROMOS = ['None','TPR','BOGO','Buy 2+ Save','Clearance','Coupon/Digital','Ad Feature','Loyalty/Card','Seasonal Promo','Other'];
+
+/* ================================================================
+   STATE
+================================================================ */
+let vendor = {}, store = {}, season = null;
+let items = [], fixtures = [];
+let photo = null, editAt = -1, pendingFixPhoto = null;
+
+/* ================================================================
+   NAV
+================================================================ */
+function nav(id, push=true) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('scr-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+  if (push) history.pushState({s: id}, '', '');
+}
+function goBack() { autosave(); prefillSetup(); nav('setup'); }
+window.addEventListener('popstate', e => nav((e.state && e.state.s) || 'setup', false));
+
+/* ================================================================
+   BOOT
+================================================================ */
+function boot() {
+  populateSel('s-season', SEASONS.map((s, i) => ({v: i, t: `${s.emoji} ${s.name} ${s.year} (${s.peak})`})));
+  populateSel('s-retailer', RETAILERS.map(r => ({v: r, t: r})));
+  populateSel('s-state', STATES.map(s => ({v: s, t: s})));
+  populateSel('c-type', Object.keys(TYPES).map(t => ({v: t, t: t})));
+  populateSel('c-promotype', PROMOS.map(p => ({v: p, t: p})));
+  document.getElementById('s-date').value = todayStr();
+  document.getElementById('cam').addEventListener('change', onItemPhoto);
+  document.getElementById('fix-cam').addEventListener('change', onFixPhoto);
+
+  // Restore vendor info
+  try {
+    const sv = localStorage.getItem('mcs_vendor');
+    if (sv) { const v = JSON.parse(sv); ['name','company','email'].forEach(k => { if (v[k]) document.getElementById('s-' + k).value = v[k]; }); }
+  } catch (e) {}
+
+  // Dismiss help if already seen
+  if (localStorage.getItem('mcs_help_seen')) document.getElementById('help-banner').style.display = 'none';
+
+  // URL season param
+  const sp = new URLSearchParams(location.search);
+  const qs = (sp.get('season') || '').toUpperCase();
+  const qy = parseInt(sp.get('year') || '0');
+  if (qs) {
+    const idx = SEASONS.findIndex(s => s.name.toUpperCase().includes(qs) && (!qy || s.year === qy));
+    if (idx >= 0) { document.getElementById('s-season').value = idx; toast(`Season: ${SEASONS[idx].name}`, 'ok'); }
+  }
+
+  tryRestore();
+}
+
+function populateSel(id, opts) {
+  const el = document.getElementById(id);
+  const first = el.options[0];
+  el.innerHTML = '';
+  if (first) el.appendChild(first);
+  opts.forEach(o => {
+    const op = document.createElement('option');
+    op.value = o.v; op.textContent = o.t; el.appendChild(op);
+  });
+}
+
+function prefillSetup() {
+  if (vendor.name) document.getElementById('s-name').value = vendor.name;
+  if (vendor.company) document.getElementById('s-company').value = vendor.company;
+  if (vendor.email) document.getElementById('s-email').value = vendor.email;
+  if (season) document.getElementById('s-season').value = season._idx;
+  if (store.retailer) document.getElementById('s-retailer').value = store.retailer;
+  if (store.state) document.getElementById('s-state').value = store.state;
+  if (store.city) document.getElementById('s-city').value = store.city;
+  if (store.date) document.getElementById('s-date').value = store.date;
+  if (store.channel) document.getElementById('s-channel').value = store.channel;
+}
+
+function dismissHelp() {
+  document.getElementById('help-banner').style.display = 'none';
+  try { localStorage.setItem('mcs_help_seen', '1'); } catch (e) {}
+}
+
+/* ================================================================
+   SCREEN 1 — START SHOPPING
+================================================================ */
+function startShopping() {
+  const name = document.getElementById('s-name').value.trim();
+  const company = document.getElementById('s-company').value.trim();
+  const email = document.getElementById('s-email').value.trim();
+  const sidx = document.getElementById('s-season').value;
+  const retailer = document.getElementById('s-retailer').value;
+  const state = document.getElementById('s-state').value;
+
+  const miss = [];
+  if (!name) miss.push('Name');
+  if (!company) miss.push('Company');
+  if (!email) miss.push('Email');
+  if (sidx === '') miss.push('Season');
+  if (!retailer) miss.push('Retailer');
+  if (!state) miss.push('State');
+  if (miss.length) { toast('Missing: ' + miss.join(', '), 'err'); return; }
+  if (!/^[^@]+@[^@]+\.[^@]+$/.test(email)) { toast('Invalid email', 'err'); return; }
+
+  vendor = {name, company, email};
+  season = {...SEASONS[parseInt(sidx)], _idx: parseInt(sidx)};
+  store = {
+    retailer, state,
+    city: document.getElementById('s-city').value.trim(),
+    region: REGION_MAP[state] || '',
+    channel: document.getElementById('s-channel').value,
+    date: document.getElementById('s-date').value || todayStr(),
+  };
+
+  try { localStorage.setItem('mcs_vendor', JSON.stringify(vendor)); } catch (e) {}
+
+  document.getElementById('bar-retailer').textContent = store.retailer;
+  document.getElementById('bar-loc').textContent = [store.city, store.state].filter(Boolean).join(', ');
+  clearForm(); updCount(); nav('capture');
+}
+
+/* ================================================================
+   SCREEN 2 — CAPTURE ITEMS
+================================================================ */
+function snapPhoto() { document.getElementById('cam').click(); }
+
+function onItemPhoto(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const rd = new FileReader();
+  rd.onload = ev => compress(ev.target.result, 800, 0.55, img => { photo = img; showPhoto(); });
+  rd.readAsDataURL(file);
+  e.target.value = '';
+}
+
+function showPhoto() {
+  const well = document.getElementById('photo-well');
+  if (photo) {
+    well.classList.add('has-img');
+    well.innerHTML = `<img src="${photo}" alt="Item"><button class="del-photo" onclick="event.stopPropagation();photo=null;showPhoto()" aria-label="Remove">✕</button>`;
+  } else {
+    well.classList.remove('has-img');
+    well.innerHTML = '<span style="font-size:40px">📷</span><span class="ph-txt">Tap to take photo</span><span class="ph-txt" style="font-size:11px">Shelf tag + item visible</span>';
+  }
+}
+
+function typeChanged() {
+  const t = document.getElementById('c-type').value;
+  const subs = TYPES[t] || [];
+  const sel = document.getElementById('c-sub');
+  const txt = document.getElementById('c-sub-txt');
+  if (t === 'OTHER' || !subs.length) {
+    sel.style.display = 'none'; txt.style.display = 'block'; txt.value = '';
+  } else {
+    sel.style.display = 'block'; txt.style.display = 'none';
+    sel.innerHTML = '<option value="">-- Subtype --</option>';
+    subs.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; sel.appendChild(o); });
+  }
+}
+
+function getSubVal() {
+  const t = document.getElementById('c-type').value;
+  if (t === 'OTHER' || !(TYPES[t] || []).length) return document.getElementById('c-sub-txt').value.trim();
+  return document.getElementById('c-sub').value;
+}
+
+function saveItem() {
+  const type = document.getElementById('c-type').value;
+  const sub = getSubVal();
+  const name = document.getElementById('c-name').value.trim();
+  const pr = document.getElementById('c-price').value;
+  const oz = document.getElementById('c-oz').value;
+
+  const miss = [];
+  if (!type) miss.push('Type');
+  if (!sub) miss.push('Subtype');
+  if (!name) miss.push('Name');
+  if (!pr) miss.push('Price');
+  if (!oz) miss.push('Oz');
+  if (miss.length) { toast('Missing: ' + miss.join(', '), 'err'); return; }
+
+  const it = {
+    retailer: store.retailer, state: store.state, city: store.city,
+    region: store.region, channel: store.channel, placement: '', shopDate: store.date,
+    productType: type, productSubtype: sub,
+    brand: document.getElementById('c-brand').value.trim(),
+    itemName: name,
+    packCount: document.getElementById('c-ct').value || '',
+    size: document.getElementById('c-size').value.trim(),
+    ounces: parseFloat(oz) || 0,
+    retailPrice: parseFloat(pr) || 0,
+    promoPrice: parseFloat(document.getElementById('c-promo').value) || '',
+    promoType: document.getElementById('c-promotype').value,
+    notes: document.getElementById('c-notes').value.trim(),
+    photo: photo || '',
+  };
+  it.pricePerOz = (it.ounces > 0 && it.retailPrice > 0) ? parseFloat((it.retailPrice / it.ounces).toFixed(3)) : 0;
+
+  items.push(it);
+  clearForm(); updCount(); autosave();
+  toast(`✅ Item #${items.length} saved!`, 'ok');
+  document.getElementById('cap-scroll').scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function clearForm() {
+  photo = null; showPhoto();
+  ['c-type','c-sub','c-name','c-brand','c-price','c-oz','c-ct','c-size','c-promo','c-promotype','c-notes'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el.tagName === 'SELECT') el.selectedIndex = 0; else el.value = '';
+  });
+  document.getElementById('c-sub').style.display = 'block';
+  document.getElementById('c-sub-txt').style.display = 'none';
+  document.getElementById('c-sub-txt').value = '';
+}
+
+function updCount() {
+  const n = items.length;
+  document.getElementById('cap-pill').textContent = n + ' item' + (n !== 1 ? 's' : '');
+  document.getElementById('rv-ct').textContent = n;
+  document.getElementById('review-btn').disabled = (n === 0);
+}
+
+/* ================================================================
+   SCREEN 3 — FIXTURE / MOD PHOTOS
+================================================================ */
+function openFixtures() {
+  if (!items.length) { toast('Capture at least one item first', 'wrn'); return; }
+  renderFixGrid(); nav('fixtures');
+}
+
+function addFixture() { document.getElementById('fix-cam').click(); }
+
+function onFixPhoto(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const rd = new FileReader();
+  rd.onload = ev => compress(ev.target.result, 1400, 0.65, img => {
+    pendingFixPhoto = img;
+    document.getElementById('fix-label-input').value = '';
+    document.getElementById('fixlbl-bg').classList.remove('hide');
+  });
+  rd.readAsDataURL(file);
+  e.target.value = '';
+}
+
+function commitFixLabel() {
+  if (!pendingFixPhoto) return;
+  fixtures.push({
+    photo: pendingFixPhoto,
+    label: document.getElementById('fix-label-input').value.trim() || `Photo ${fixtures.length + 1}`,
+    retailer: store.retailer, state: store.state, city: store.city, date: store.date,
+  });
+  pendingFixPhoto = null;
+  hideFixLabel();
+  renderFixGrid(); updFixCount(); autosave();
+  toast(`📸 Fixture photo #${fixtures.length} added!`, 'ok');
+}
+
+function hideFixLabel() { document.getElementById('fixlbl-bg').classList.add('hide'); pendingFixPhoto = null; }
+
+function delFixture(i) {
+  if (!confirm('Remove this fixture photo?')) return;
+  fixtures.splice(i, 1); renderFixGrid(); updFixCount(); autosave();
+}
+
+function renderFixGrid() {
+  const grid = document.getElementById('fix-grid');
+  grid.innerHTML = fixtures.map((f, i) => `
+    <div class="fix-card">
+      <img src="${f.photo}" alt="${esc(f.label)}">
+      <div class="fix-label">${esc(f.label)}</div>
+      <button class="fix-del" onclick="delFixture(${i})" aria-label="Remove">✕</button>
+    </div>
+  `).join('') + '<div class="fix-add" onclick="addFixture()"><span>📷</span><span>Add Photo</span></div>';
+  updFixCount();
+}
+
+function updFixCount() {
+  document.getElementById('fix-pill').textContent = fixtures.length + ' photo' + (fixtures.length !== 1 ? 's' : '');
+}
+
+/* ================================================================
+   SCREEN 4 — REVIEW
+================================================================ */
+function openReview() {
+  renderReview(); nav('review');
+}
+
+function renderReview() {
+  const n = items.length;
+  document.getElementById('rv-total').textContent = n;
+  document.getElementById('rv-pill').textContent = n;
+  document.getElementById('rv-fix-ct').textContent = fixtures.length;
+  document.getElementById('rv-store').textContent =
+    `${store.retailer} · ${[store.city, store.state].filter(Boolean).join(', ')} · ${season.name} ${season.year}`;
+
+  const list = document.getElementById('rv-list');
+  if (!n) {
+    list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">No items yet.</div>';
+  } else {
+    list.innerHTML = items.map((it, i) => {
+      const thumb = it.photo
+        ? `<img class="rv-thumb" src="${it.photo}" alt="">`
+        : '<div class="rv-thumb" style="display:flex;align-items:center;justify-content:center;font-size:18px">📷</div>';
+      const ppo = it.pricePerOz ? ` · $${it.pricePerOz.toFixed(2)}/oz` : '';
+      return `<div class="rv">
+        ${thumb}
+        <div class="rv-info">
+          <div class="rv-name">${esc(it.itemName)}</div>
+          <div class="rv-sub">${esc(it.productType)} · ${esc(it.productSubtype)}</div>
+          <div class="rv-price">$${Number(it.retailPrice).toFixed(2)} · ${it.ounces}oz${ppo}</div>
+        </div>
+        <div class="rv-btns">
+          <button onclick="showEdit(${i})">✏️</button>
+          <button onclick="delItem(${i})" style="color:var(--red)">🗑️</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Fixture photos in review
+  const fixCard = document.getElementById('rv-fix-card');
+  if (fixtures.length) {
+    fixCard.style.display = 'block';
+    document.getElementById('rv-fix-grid').innerHTML = fixtures.map((f, i) => `
+      <div class="fix-card"><img src="${f.photo}" alt="${esc(f.label)}"><div class="fix-label">${esc(f.label)}</div></div>
+    `).join('');
+  } else {
+    fixCard.style.display = 'none';
+  }
+}
+
+function delItem(i) {
+  if (!confirm('Delete ' + items[i].itemName + '?')) return;
+  items.splice(i, 1); renderReview(); updCount(); autosave();
+  toast('Deleted', 'wrn');
+}
+
+/* ================================================================
+   EDIT SHEET
+================================================================ */
+function showEdit(i) {
+  editAt = i;
+  const it = items[i];
+  document.getElementById('edit-body').innerHTML = `
+    <div class="f"><label>Name</label><input id="e-name" value="${ea(it.itemName)}"></div>
+    <div class="f-row">
+      <div class="f"><label>Retail $</label><input type="number" id="e-price" value="${it.retailPrice}" step=".01" inputmode="decimal"></div>
+      <div class="f"><label>Oz</label><input type="number" id="e-oz" value="${it.ounces}" step=".1" inputmode="decimal"></div>
+    </div>
+    <div class="f"><label>Brand</label><input id="e-brand" value="${ea(it.brand)}"></div>
+    <div class="f-row">
+      <div class="f"><label>Pack Ct</label><input type="number" id="e-ct" value="${it.packCount}" inputmode="numeric"></div>
+      <div class="f"><label>Size</label><input id="e-size" value="${ea(it.size)}"></div>
+    </div>
+    <div class="f-row">
+      <div class="f"><label>Promo $</label><input type="number" id="e-promo" value="${it.promoPrice || ''}" step=".01" inputmode="decimal"></div>
+      <div class="f"><label>Promo Type</label><input id="e-pt" value="${ea(it.promoType)}"></div>
+    </div>
+    <div class="f"><label>Notes</label><textarea id="e-notes">${esc(it.notes)}</textarea></div>
+  `;
+  document.getElementById('edit-bg').classList.remove('hide');
+}
+
+function commitEdit() {
+  if (editAt < 0) return;
+  const it = items[editAt];
+  it.itemName = document.getElementById('e-name').value.trim();
+  it.retailPrice = parseFloat(document.getElementById('e-price').value) || 0;
+  it.ounces = parseFloat(document.getElementById('e-oz').value) || 0;
+  it.brand = document.getElementById('e-brand').value.trim();
+  it.packCount = document.getElementById('e-ct').value || '';
+  it.size = document.getElementById('e-size').value.trim();
+  it.promoPrice = parseFloat(document.getElementById('e-promo').value) || '';
+  it.promoType = document.getElementById('e-pt').value.trim();
+  it.notes = document.getElementById('e-notes').value.trim();
+  it.pricePerOz = (it.ounces > 0 && it.retailPrice > 0) ? parseFloat((it.retailPrice / it.ounces).toFixed(3)) : 0;
+  hideEdit(); renderReview(); autosave(); toast('Updated ✓', 'ok');
+}
+
+function hideEdit() { document.getElementById('edit-bg').classList.add('hide'); editAt = -1; }
+document.addEventListener('click', e => { if (e.target === document.getElementById('edit-bg')) hideEdit(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { hideEdit(); hideFixLabel(); } });
+
+/* ================================================================
+   SEND — Web Share API → mailto fallback
+================================================================ */
+function csvEsc(v) {
+  if (v == null) return '';
+  const s = String(v);
+  return (s.includes(',') || s.includes('"') || s.includes('\n')) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+
+function buildCSV() {
+  const sName = `${season.name} ${season.year}`;
+  const dates = SEASON_DATES[sName] || {s: '', e: ''};
+  const fixNotes = document.getElementById('fix-notes') ? document.getElementById('fix-notes').value.trim() : '';
+  const meta = [
+    ['BAKERY COMPETITIVE INTELLIGENCE — VENDOR SUBMISSION'],
+    ['Season', sName], ['Peak Window', `${dates.s} to ${dates.e}`],
+    ['Vendor Name', vendor.name], ['Vendor Company', vendor.company],
+    ['Vendor Email', vendor.email], ['States Shopped', store.state || ''],
+    ['Fixture Photos', String(fixtures.length)],
+    ['Fixture Notes', fixNotes],
+    ['Exported At', new Date().toLocaleString()], ['Send To', BUYER_EMAIL], [],
+  ];
+  const hdr = ['Retailer','State','Region','City','Channel','Placement',
+    'Prod Type','Subtype','Brand','Item Name','Pack Ct','Size / Format',
+    'Oz','Retail $','Promo $','Promo Type','$/oz (calc)','Shop Date','Notes'];
+  const rows = items.map(it => [
+    it.retailer, it.state, it.region, it.city, it.channel, it.placement || '',
+    it.productType, it.productSubtype, it.brand, it.itemName,
+    it.packCount, it.size, it.ounces, it.retailPrice, it.promoPrice,
+    it.promoType, it.pricePerOz || '', it.shopDate, it.notes,
+  ].map(csvEsc));
+  return [...meta.map(r => r.map(csvEsc).join(',')), hdr.map(csvEsc).join(','), ...rows.map(r => r.join(','))].join('\n');
+}
+
+function makeFilename() {
+  const s = season.name.replace(/[^a-zA-Z0-9]/g, '');
+  const c = vendor.company.replace(/[^a-zA-Z0-9]/g, '').slice(0, 16);
+  const d = new Date();
+  const ds = [String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0'), d.getFullYear()].join('');
+  return `CompShop_${s}_${c}_${ds}.csv`;
+}
+
+function sendToClayV3() {
+  if (!items.length) { toast('No items to send', 'wrn'); return; }
+  const csv = buildCSV();
+  const fn = makeFilename();
+  const blob = new Blob([csv], {type: 'text/csv'});
+  const file = new File([blob], fn, {type: 'text/csv'});
+  const sName = `${season.name} ${season.year}`;
+  const rets = [...new Set(items.map(i => i.retailer))].join(', ');
+  const sts = [...new Set(items.map(i => i.state))].join(', ');
+
+  // Build files array: CSV + fixture photos as JPEGs
+  const filesToShare = [file];
+  fixtures.forEach((f, i) => {
+    try {
+      const b64 = f.photo.split(',')[1];
+      const bin = atob(b64);
+      const arr = new Uint8Array(bin.length);
+      for (let j = 0; j < bin.length; j++) arr[j] = bin.charCodeAt(j);
+      const label = (f.label || 'fixture').replace(/[^a-zA-Z0-9]/g, '_').slice(0, 30);
+      filesToShare.push(new File([arr], `Fixture_${i + 1}_${label}.jpg`, {type: 'image/jpeg'}));
+    } catch (e) { /* skip bad photos */ }
+  });
+
+  // Try Web Share API (best on mobile — shares CSV + fixture photos together)
+  if (navigator.canShare && navigator.canShare({files: filesToShare})) {
+    navigator.share({
+      title: `Comp Shop — ${sName} — ${vendor.company}`,
+      text: `${items.length} items, ${fixtures.length} fixture photos from ${rets} in ${sts}.\nSend CSV + photos to ${BUYER_EMAIL}.`,
+      files: filesToShare,
+    }).then(() => {
+      toast('Shared! ✓', 'ok');
+      showDone(fn, rets, sts, 'share');
+    }).catch(err => {
+      if (err.name !== 'AbortError') fallbackSend(csv, fn, sName, rets, sts);
+    });
+  } else {
+    fallbackSend(csv, fn, sName, rets, sts);
+  }
+}
+
+function fallbackSend(csv, fn, sName, rets, sts) {
+  // Download CSV
+  const url = URL.createObjectURL(new Blob([csv], {type: 'text/csv'}));
+  const a = document.createElement('a');
+  a.href = url; a.download = fn; document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+
+  // Download fixture photos as individual JPEGs
+  fixtures.forEach((f, i) => {
+    try {
+      const label = (f.label || 'fixture').replace(/[^a-zA-Z0-9]/g, '_').slice(0, 30);
+      const a2 = document.createElement('a');
+      a2.href = f.photo; a2.download = `Fixture_${i + 1}_${label}.jpg`;
+      document.body.appendChild(a2); a2.click(); a2.remove();
+    } catch (e) {}
+  });
+
+  // Open mailto
+  const subj = encodeURIComponent(`Comp Shop — ${sName} — ${vendor.company}`);
+  const fixNote = fixtures.length ? `\n- ${fixtures.length} fixture photos (attached separately)` : '';
+  const body = encodeURIComponent(
+    `Hi Clay,\n\nAttached: ${fn}\n\n` +
+    `- Season: ${sName}\n- ${items.length} items\n- Retailers: ${rets}\n- States: ${sts}${fixNote}\n` +
+    `- Date: ${new Date().toLocaleDateString()}\n\n` +
+    `⚠️ ATTACH THE CSV (and fixture photos) before sending!\n\n${vendor.name}\n${vendor.email}`
+  );
+  setTimeout(() => { window.location.href = `mailto:${BUYER_EMAIL}?subject=${subj}&body=${body}`; }, 600);
+  showDone(fn, rets, sts, 'email');
+}
+
+function showDone(fn, rets, sts, method) {
+  const fixTxt = fixtures.length ? `<br>${fixtures.length} fixture photo${fixtures.length > 1 ? 's' : ''} included.` : '';
+  const msg = method === 'share'
+    ? `<strong>${fn}</strong> shared via your device.${fixTxt}<br><br>${items.length} items · ${rets} · ${sts}`
+    : `<strong>${fn}</strong> downloaded.${fixTxt}<br><br>Your email app is opening — <strong>attach the CSV${fixtures.length ? ' + photos' : ''}</strong> and hit Send!<br><br>${items.length} items · ${rets} · ${sts}`;
+  document.getElementById('done-msg').innerHTML = msg;
+  nav('done');
+}
+
+/* ================================================================
+   DRAFT PERSISTENCE
+================================================================ */
+const DRAFT_KEY = 'mcs_draft_v3';
+let saveTimer = null;
+
+function autosave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try {
+      const lite = items.map(it => ({...it, photo: ''}));
+      const fixLite = fixtures.map(f => ({...f, photo: ''})); // Strip heavy photos
+      const fixNotes = document.getElementById('fix-notes') ? document.getElementById('fix-notes').value.trim() : '';
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({
+        vendor, store, season, items: lite, fixtures: fixLite, fixNotes, at: new Date().toISOString()
+      }));
+    } catch (e) {
+      if (e.name === 'QuotaExceededError') toast('Storage full — send data first', 'wrn');
+    }
+  }, 1200);
+}
+
+function tryRestore() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (!d.items || !d.items.length) return;
+    const when = d.at ? new Date(d.at).toLocaleString() : 'earlier';
+    if (!confirm(`Resume draft? ${d.items.length} items saved ${when}`)) return;
+
+    vendor = d.vendor || {};
+    store = d.store || {};
+    season = d.season || null;
+    items = d.items || [];
+    fixtures = d.fixtures || [];
+    if (d.fixNotes && document.getElementById('fix-notes')) document.getElementById('fix-notes').value = d.fixNotes;
+
+    prefillSetup();
+    if (store.retailer && season) {
+      document.getElementById('bar-retailer').textContent = store.retailer;
+      document.getElementById('bar-loc').textContent = [store.city, store.state].filter(Boolean).join(', ');
+      updCount();
+      nav('capture');
+      toast(`Resumed: ${items.length} items`, 'ok');
+    }
+  } catch (e) { console.warn('Restore failed', e); }
+}
+
+function freshSession() {
+  if (items.length && !confirm('Clear all data and start fresh?')) return;
+  try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+  vendor = {}; store = {}; season = null; items = []; fixtures = [];
+  document.querySelectorAll('#scr-setup input, #scr-setup select').forEach(el => {
+    if (el.tagName === 'SELECT') el.selectedIndex = 0; else el.value = '';
+  });
+  document.getElementById('s-date').value = todayStr();
+  if (document.getElementById('fix-notes')) document.getElementById('fix-notes').value = '';
+  clearForm(); updCount(); nav('setup');
+}
+
+/* ================================================================
+   IMAGE COMPRESSION
+================================================================ */
+function compress(dataUrl, maxPx, quality, cb) {
+  const img = new Image();
+  img.onload = () => {
+    let w = img.width, h = img.height;
+    if (w > maxPx || h > maxPx) {
+      if (w >= h) { h = Math.round(h * maxPx / w); w = maxPx; }
+      else { w = Math.round(w * maxPx / h); h = maxPx; }
+    }
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    c.getContext('2d').drawImage(img, 0, 0, w, h);
+    cb(c.toDataURL('image/jpeg', quality));
+  };
+  img.onerror = () => cb(dataUrl);
+  img.src = dataUrl;
+}
+
+/* ================================================================
+   UTILITIES
+================================================================ */
+function todayStr() {
+  const d = new Date();
+  return [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
+}
+function esc(s) { return s ? String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : ''; }
+function ea(s) { return esc(s).replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+function toast(msg, cls = '') {
+  const t = document.createElement('div'); t.className = 'toast ' + (cls || ''); t.textContent = msg;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; setTimeout(() => t.remove(), 350); }, 2800);
+}
+
+boot();
+</script>
+</body>
+</html>
