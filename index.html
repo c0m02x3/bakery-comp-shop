@@ -91,9 +91,104 @@ input,select,textarea,button{font:inherit;color:inherit}
 .fix-card .fix-del{position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.5);color:#fff;border:none;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .fix-add{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:2px dashed var(--bdr);border-radius:var(--r);aspect-ratio:4/3;cursor:pointer;color:var(--muted);font-size:12px;font-weight:700}
 .fix-add span:first-child{font-size:28px}
+/* ============ WELCOME MODAL ============ */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal-bg.hide{display:none}
+.modal{background:var(--card);border-radius:20px;max-width:420px;width:100%;max-height:90dvh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.modal-hdr{background:var(--blue);color:#fff;padding:20px;border-radius:20px 20px 0 0;text-align:center}
+.modal-hdr h2{font-size:18px;font-weight:800;margin-bottom:2px}
+.modal-hdr p{font-size:12px;opacity:.8}
+.modal-body{padding:20px}
+.modal-section{margin-bottom:16px}
+.modal-section h3{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.modal-section ul{padding-left:20px;font-size:13px;line-height:1.7}
+.modal-section.do h3{color:var(--green)}
+.modal-section.dont h3{color:var(--red)}
+.modal-section.dont{background:#fef2f2;border-radius:var(--r);padding:12px 14px}
+.modal-section.do{background:#f0fdf4;border-radius:var(--r);padding:12px 14px}
+.modal-section.conf{background:#fefce8;border-radius:var(--r);padding:12px 14px}
+.modal-section.conf h3{color:#92400e}
+.modal-section.conf p{font-size:12px;color:#78350f;line-height:1.6}
+.modal-foot{padding:0 20px 20px;display:flex;flex-direction:column;gap:8px}
+.modal-foot .chk-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0}
+.modal-foot .chk-row input[type=checkbox]{width:22px;height:22px;margin-top:1px;flex-shrink:0;accent-color:var(--blue)}
+.modal-foot .chk-row label{font-size:13px;font-weight:600;color:var(--text);line-height:1.4;cursor:pointer}
+/* ============ ONBOARDING TOUR ============ */
+.tour-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;display:flex;align-items:flex-end;justify-content:center}
+.tour-bg.hide{display:none}
+.tour-tip{background:var(--card);border-radius:16px 16px 0 0;width:100%;max-width:500px;padding:20px 20px calc(20px + var(--sab));box-shadow:0 -4px 20px rgba(0,0,0,.15);animation:shUp .25s ease-out}
+.tour-tip h3{font-size:16px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.tour-tip p{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+.tour-dots{display:flex;gap:6px;justify-content:center;margin-bottom:12px}
+.tour-dots .dot{width:8px;height:8px;border-radius:50%;background:var(--bdr)}
+.tour-dots .dot.active{background:var(--blue);width:20px;border-radius:4px}
+.tour-nav{display:flex;gap:10px}
+.tour-nav .skip-link{font-size:13px;color:var(--muted);text-decoration:underline;cursor:pointer;display:flex;align-items:center}
 </style>
 </head>
 <body>
+
+<!-- ===== WELCOME / COMPLIANCE MODAL ===== -->
+<div id="welcome-modal" class="modal-bg">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div style="font-size:36px;margin-bottom:6px">🛒</div>
+      <h2>Bakery Competitive Shopping Tool</h2>
+      <p>Walmart Bakery Seasonal Buying Team</p>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <h3>📌 Purpose</h3>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6">
+          This tool helps vendors capture <strong>publicly available</strong> competitive retail pricing
+          and merchandising data from store visits. Data collected supports the Walmart Bakery Seasonal
+          Buying team in assortment planning and pricing strategy.
+        </p>
+      </div>
+      <div class="modal-section do">
+        <h3>✅ What TO Capture</h3>
+        <ul>
+          <li>Retail shelf prices (visible to any shopper)</li>
+          <li>Promoted / sale prices &amp; signage</li>
+          <li>Product photos from the shelf</li>
+          <li>Pack size, oz, item descriptions</li>
+          <li>Fixture / mod layout photos</li>
+          <li>Store name, city, state</li>
+        </ul>
+      </div>
+      <div class="modal-section dont">
+        <h3>⛔ What NOT to Capture</h3>
+        <ul>
+          <li>Cost data, invoices, or margin info</li>
+          <li>Vendor agreements or contract terms</li>
+          <li>Internal competitor documents</li>
+          <li>Employee names or personal info</li>
+          <li>Any non-public or proprietary data</li>
+        </ul>
+      </div>
+      <div class="modal-section conf">
+        <h3>🔒 Confidentiality</h3>
+        <p>
+          This tool is provided by the <strong>Walmart Bakery Seasonal Buying Team</strong> for use
+          exclusively in support of Walmart bakery merchandising efforts. Do not share this tool,
+          its URL, or data collected with anyone outside of your working relationship with Walmart
+          Bakery. All data submitted is for internal Walmart use only.
+        </p>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <div class="chk-row">
+        <input type="checkbox" id="accept-chk">
+        <label for="accept-chk">I understand this tool is for <strong>publicly available information only</strong>
+          and I will not capture or share competitively sensitive data.</label>
+      </div>
+      <button class="btn btn-blue btn-full" id="accept-btn" onclick="acceptTerms()" disabled>🔓 Accept &amp; Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ONBOARDING TOUR OVERLAY ===== -->
+<div id="tour-bg" class="tour-bg hide"></div>
 
 <!-- ===== NOSCRIPT: Shows in email clients that disable JS ===== -->
 <noscript>
@@ -456,6 +551,26 @@ const PROMOS = ['None','TPR','BOGO','Buy 2+ Save','Clearance','Coupon/Digital','
 let vendor = {}, store = {}, season = null;
 let items = [], fixtures = [];
 let photo = null, editAt = -1, pendingFixPhoto = null;
+let tourStep = 0;
+
+const TOUR_STEPS = [
+  {icon:'👋', title:'Welcome to Bakery Comp Shop!',
+   text:'This tool helps you quickly capture competitive pricing while shopping. Let\'s walk through how it works — takes 30 seconds!'},
+  {icon:'👤', title:'Step 1: Your Info',
+   text:'Enter your name, company, and email. This gets saved so you only type it once — it auto-fills next time you open the tool.'},
+  {icon:'📅', title:'Step 2: Pick a Season',
+   text:'Select which seasonal period you\'re shopping (Easter, Halloween, etc). Each season has its own peak window dates.'},
+  {icon:'🏬', title:'Step 3: Store Details',
+   text:'Pick the retailer, state, and city you\'re visiting. This tags every item you capture with the store location.'},
+  {icon:'📸', title:'Step 4: Snap & Capture!',
+   text:'Take a photo of each item\'s shelf tag, then fill in the details — type, price, oz, promo info. Tap "Save & Capture Next" to keep going.'},
+  {icon:'🏪', title:'Step 5: Fixture Photos',
+   text:'After capturing items, snap photos of the full fixture/mod/endcap to show how the seasonal set is merchandised together.'},
+  {icon:'📧', title:'Step 6: Review & Send',
+   text:'Review all your items, edit if needed, then tap "Send to Clay" — it creates a CSV and opens your email app. Attach and send!'},
+  {icon:'🚀', title:'You\'re Ready!',
+   text:'That\'s it! Your vendor info saves between sessions. You can also resume a draft if you close the app mid-shop. Happy shopping! 🛒'},
+];
 
 /* ================================================================
    NAV
@@ -468,6 +583,72 @@ function nav(id, push=true) {
 }
 function goBack() { autosave(); prefillSetup(); nav('setup'); }
 window.addEventListener('popstate', e => nav((e.state && e.state.s) || 'setup', false));
+
+/* ================================================================
+   WELCOME MODAL + ONBOARDING TOUR
+================================================================ */
+function initWelcome() {
+  const accepted = localStorage.getItem('mcs_terms_accepted');
+  if (accepted) {
+    document.getElementById('welcome-modal').classList.add('hide');
+    // Show tour if first time (terms accepted but tour not seen)
+    if (!localStorage.getItem('mcs_tour_seen')) setTimeout(() => startTour(), 600);
+    return;
+  }
+  // Wire up checkbox → enable button
+  document.getElementById('accept-chk').addEventListener('change', function() {
+    document.getElementById('accept-btn').disabled = !this.checked;
+  });
+}
+
+function acceptTerms() {
+  if (!document.getElementById('accept-chk').checked) return;
+  localStorage.setItem('mcs_terms_accepted', '1');
+  document.getElementById('welcome-modal').classList.add('hide');
+  // Start onboarding tour for first-time users
+  if (!localStorage.getItem('mcs_tour_seen')) setTimeout(() => startTour(), 400);
+}
+
+function startTour() {
+  tourStep = 0;
+  renderTourStep();
+  document.getElementById('tour-bg').classList.remove('hide');
+}
+
+function renderTourStep() {
+  const step = TOUR_STEPS[tourStep];
+  const total = TOUR_STEPS.length;
+  const isLast = tourStep === total - 1;
+  const dots = TOUR_STEPS.map((_, i) =>
+    `<div class="dot${i === tourStep ? ' active' : ''}"></div>`
+  ).join('');
+
+  document.getElementById('tour-bg').innerHTML = `
+    <div class="tour-tip">
+      <h3>${step.icon} ${step.title}</h3>
+      <p>${step.text}</p>
+      <div class="tour-dots">${dots}</div>
+      <div class="tour-nav">
+        ${tourStep > 0 ? '<button class="btn btn-ghost" onclick="prevTour()" style="min-height:44px;padding:0 16px">← Back</button>' : ''}
+        <button class="btn btn-blue btn-full" onclick="${isLast ? 'endTour()' : 'nextTour()'}" style="min-height:44px">
+          ${isLast ? '✅ Let\'s Go!' : 'Next →'}
+        </button>
+        ${!isLast ? '<span class="skip-link" onclick="endTour()">Skip tour</span>' : ''}
+      </div>
+    </div>
+  `;
+}
+
+function nextTour() {
+  if (tourStep < TOUR_STEPS.length - 1) { tourStep++; renderTourStep(); }
+}
+function prevTour() {
+  if (tourStep > 0) { tourStep--; renderTourStep(); }
+}
+function endTour() {
+  document.getElementById('tour-bg').classList.add('hide');
+  localStorage.setItem('mcs_tour_seen', '1');
+}
 
 /* ================================================================
    BOOT
@@ -501,6 +682,7 @@ function boot() {
   }
 
   tryRestore();
+  initWelcome();
 }
 
 function populateSel(id, opts) {
